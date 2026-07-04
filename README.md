@@ -70,7 +70,7 @@ IP_Document_Protection_System/
 ### 1. Clone the repository
 
 ```bash
-git clone <https://github.com/Shiva1576/Intellectual-Property-Document-Protection-System-With-Ownership-Verification.git>
+git clone https://github.com/Shiva1576/Intellectual-Property-Document-Protection-System-With-Ownership-Verification.git
 cd IP_Document_Protection_System
 ```
 
