@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Communications{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-3 col-md-12">
+        <div class="sidebar-menu">
+            <div class="sidebar-title">Navigation</div>
+            <a href="{{ url_for('registrar_dashboard') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+            <a href="{{ url_for('registrar_manage_registry') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Manage Registry</a>
+            <a href="{{ url_for('registrar_communications') }}" class="active"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Communications</a>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="card mb-4">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Encrypted Secrets</h5></div>
+            <div class="card-body" style="padding:{% if secrets %}0{% else %}1.4rem{% endif %};">
+                {% if secrets %}
+                <div class="table-responsive"><table class="table">
+                    <thead><tr><th>From</th><th>Description</th><th>Received</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>{% for secret in secrets %}<tr>
+                        <td style="font-weight:500;color:var(--text-primary);">{{ secret.from_username }}</td>
+                        <td>{{ secret.description }}</td>
+                        <td style="font-family:'DM Mono',monospace;font-size:0.8rem;">{{ secret.created_at[:10] }}</td>
+                        <td>{% if secret.is_read %}<span class="badge badge-approved">Read</span>{% else %}<span class="badge badge-submitted">New</span>{% endif %}</td>
+                        <td><button class="btn btn-sm btn-primary decrypt-btn" data-secret-id="{{ secret.doc_id }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>Decrypt</button></td>
+                    </tr>{% endfor %}</tbody>
+                </table></div>
+                {% else %}
+                <div class="empty-state" style="padding:2rem;"><div class="empty-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></div><p style="margin:0;color:var(--text-muted);font-size:0.85rem;">No encrypted secrets received.</p></div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>Messages</h5></div>
+            <div class="card-body">
+                {% if received_messages %}
+                <div style="display:flex;flex-direction:column;gap:0.6rem;">
+                {% for msg in received_messages %}
+                <div style="background:var(--bg-elevated);border:1px solid {% if not msg.is_read %}rgba(232,184,75,0.2){% else %}var(--border-dim){% endif %};border-radius:var(--radius-md);padding:1rem;">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <strong style="font-size:0.9rem;color:var(--text-primary);">{{ msg.subject }}</strong>
+                        <span style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--text-muted);">{{ msg.created_at[:10] }}</span>
+                    </div>
+                    <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.5rem;">From: {{ msg.from_username }}</p>
+                    <p style="font-size:0.875rem;color:var(--text-secondary);margin:0;">{{ msg.content }}</p>
+                </div>
+                {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state" style="padding:1.5rem;"><p style="margin:0;color:var(--text-muted);font-size:0.85rem;">No messages received.</p></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="decryptModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-mid);border-radius:var(--radius-lg);">
+            <div class="modal-header" style="border-bottom:1px solid var(--border-dim);">
+                <h5 class="modal-title" style="font-family:'Syne',sans-serif;color:var(--text-primary);">Decrypted Secret</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="decryptedContent" style="background:var(--bg-deep);border:1px solid var(--border-mid);border-radius:var(--radius-sm);padding:1rem;font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--emerald);word-break:break-all;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block scripts %}
+<script>
+document.querySelectorAll('.decrypt-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const secretId = this.dataset.secretId;
+        try {
+            const response = await fetch(`/decrypt-secret/${secretId}`);
+            const data = await response.json();
+            if (data.decrypted) {
+                document.getElementById('decryptedContent').textContent = data.decrypted;
+                new bootstrap.Modal(document.getElementById('decryptModal')).show();
+            } else { alert('Decryption failed: ' + (data.error || 'Unknown error')); }
+        } catch(e) { alert('Error decrypting secret'); }
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

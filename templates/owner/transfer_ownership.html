@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Transfer Ownership{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-3 col-md-12">
+        <div class="sidebar-menu">
+            <div class="sidebar-title">Navigation</div>
+            <a href="{{ url_for('owner_dashboard') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+            <a href="{{ url_for('owner_view_patents') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>View Patents</a>
+            <a href="{{ url_for('owner_secrets') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Secrets &amp; Messages</a>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>Transfer Patent Ownership</h5></div>
+            <div class="card-body">
+                <div class="alert alert-warning mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <strong>Warning:</strong> This action permanently transfers ownership of this patent to another user and cannot be undone.
+                </div>
+                <div style="background:var(--bg-elevated);border:1px solid var(--border-dim);border-radius:var(--radius-md);padding:1.25rem;margin-bottom:1.5rem;">
+                    <p style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.75rem;">Patent Details</p>
+                    <p style="margin-bottom:0.4rem;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.75rem;">Title</span><br><span style="color:var(--text-primary);font-weight:500;">{{ document.title }}</span></p>
+                    <p style="margin-bottom:0.4rem;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.75rem;">Type</span><br><span style="color:var(--text-secondary);">{{ document.document_type }}</span></p>
+                    <p style="margin:0;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.75rem;">Registration #</span><br><span style="font-family:'DM Mono',monospace;color:var(--gold);">{{ document.registration_number }}</span></p>
+                </div>
+                <form method="POST" action="{{ url_for('owner_transfer_ownership', doc_id=doc_id) }}">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Transfer To *</label>
+                            <select class="form-select" name="new_owner" required>
+                                <option value="">Select new owner…</option>
+                                {% for owner in other_owners %}
+                                <option value="{{ owner.username }}">{{ owner.full_name }} ({{ owner.organization or 'Independent' }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Reason for Transfer *</label>
+                            <textarea class="form-control" name="reason" rows="3" placeholder="Explain why you are transferring this patent…" required></textarea>
+                        </div>
+                        <div class="col-12 d-flex gap-2">
+                            <button type="submit" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>Confirm Transfer</button>
+                            <a href="{{ url_for('owner_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Verify Ownership{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-3 col-md-12">
+        <div class="sidebar-menu">
+            <div class="sidebar-title">Navigation</div>
+            <a href="{{ url_for('registrar_dashboard') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+            <a href="{{ url_for('registrar_manage_registry') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Manage Registry</a>
+            <a href="{{ url_for('registrar_communications') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Communications</a>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="card mb-4">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>Ownership Verification</h5></div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h4 style="font-family:'Syne',sans-serif;font-weight:800;color:var(--text-primary);margin-bottom:0.3rem;">{{ document.title }}</h4>
+                        <p style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text-muted);margin-bottom:1.25rem;">{{ document.document_type }}</p>
+                        <div style="display:flex;flex-direction:column;gap:0.6rem;">
+                            <div style="display:flex;justify-content:space-between;"><span style="font-size:0.78rem;color:var(--text-muted);">Registration #</span><span style="font-family:'DM Mono',monospace;font-size:0.82rem;color:var(--text-primary);">{{ document.registration_number or 'Pending' }}</span></div>
+                            <div style="display:flex;justify-content:space-between;"><span style="font-size:0.78rem;color:var(--text-muted);">Status</span><span class="badge badge-{{ document.status }}">{{ document.status|title }}</span></div>
+                            <div style="display:flex;justify-content:space-between;"><span style="font-size:0.78rem;color:var(--text-muted);">Created</span><span style="font-family:'DM Mono',monospace;font-size:0.82rem;color:var(--text-secondary);">{{ document.created_at[:10] }}</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border-dim);border-radius:var(--radius-md);padding:1.1rem;margin-bottom:0.75rem;">
+                            <p style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.75rem;">Original Creator</p>
+                            <p style="margin-bottom:0.4rem;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.72rem;display:block;">Name</span><span style="color:var(--text-primary);font-weight:500;">{{ creator.full_name }}</span></p>
+                            <p style="margin-bottom:0.4rem;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.72rem;display:block;">Email</span><span style="color:var(--text-secondary);">{{ creator.email }}</span></p>
+                            <p style="margin:0;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.72rem;display:block;">Organization</span><span style="color:var(--text-secondary);">{{ creator.organization or 'N/A' }}</span></p>
+                        </div>
+                        {% if owner %}
+                        <div style="background:var(--emerald-dim);border:1px solid rgba(45,212,160,0.2);border-radius:var(--radius-md);padding:1.1rem;">
+                            <p style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--emerald);margin-bottom:0.75rem;">Current Owner</p>
+                            <p style="margin-bottom:0.4rem;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.72rem;display:block;">Name</span><span style="color:var(--text-primary);font-weight:500;">{{ owner.full_name }}</span></p>
+                            <p style="margin:0;font-size:0.875rem;"><span style="color:var(--text-muted);font-size:0.72rem;display:block;">Email</span><span style="color:var(--text-secondary);">{{ owner.email }}</span></p>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning" style="margin:0;font-size:0.85rem;">No owner has claimed this patent yet.</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Ownership History</h5></div>
+            <div class="card-body">
+                {% if ownership_history %}
+                <div class="timeline">
+                    {% for record in ownership_history %}
+                    <div class="timeline-item">
+                        <p class="timeline-date">{{ record.transferred_at[:10] }}</p>
+                        <h6 style="color:var(--text-primary);font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.2rem;">{{ record.owner_username }}</h6>
+                        {% if record.previous_owner %}<p style="font-size:0.8rem;color:var(--text-muted);margin:0;">Transferred from: {{ record.previous_owner }}</p>{% else %}<p style="font-size:0.8rem;color:var(--text-muted);margin:0;">Initial claim</p>{% endif %}
+                        {% if record.transfer_reason %}<p style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.2rem;">{{ record.transfer_reason }}</p>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state" style="padding:1.5rem;"><p style="margin:0;color:var(--text-muted);font-size:0.85rem;">No ownership transfers recorded.</p></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Review Submission{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-3 col-md-12">
+        <div class="sidebar-menu">
+            <div class="sidebar-title">Navigation</div>
+            <a href="{{ url_for('registrar_dashboard') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+            <a href="{{ url_for('registrar_manage_registry') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>Manage Registry</a>
+            <a href="{{ url_for('registrar_communications') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Communications</a>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="card mb-4">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>Review IP Submission</h5></div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <h4 style="font-family:'Syne',sans-serif;font-weight:800;color:var(--text-primary);margin-bottom:0.3rem;letter-spacing:-0.03em;">{{ document.title }}</h4>
+                        <p style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text-muted);margin-bottom:1.5rem;">{{ document.document_type }} &nbsp;·&nbsp; Submitted {{ document.updated_at[:10] }}</p>
+                        <div style="border-top:1px solid var(--border-dim);padding-top:1.25rem;margin-bottom:1.25rem;">
+                            <p class="section-label">Description</p>
+                            <p style="color:var(--text-secondary);font-size:0.9rem;">{{ document.description }}</p>
+                        </div>
+                        <div>
+                            <p class="section-label">Keywords</p>
+                            <p style="color:var(--text-secondary);font-size:0.9rem;">{{ document.keywords or 'None specified' }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div style="background:var(--bg-elevated);border:1px solid var(--border-dim);border-radius:var(--radius-md);padding:1.25rem;">
+                            <p style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.85rem;">Creator</p>
+                            <p style="margin-bottom:0.65rem;"><span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:0.15rem;">Name</span><span style="color:var(--text-primary);font-size:0.875rem;font-weight:500;">{{ creator.full_name }}</span></p>
+                            <p style="margin-bottom:0.65rem;"><span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:0.15rem;">Email</span><span style="color:var(--text-secondary);font-size:0.875rem;">{{ creator.email }}</span></p>
+                            <p style="margin:0;"><span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-bottom:0.15rem;">Organization</span><span style="color:var(--text-secondary);font-size:0.875rem;">{{ creator.organization or 'N/A' }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if files %}
+        <div class="card mb-4">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Encrypted Files</h5></div>
+            <div class="card-body" style="padding:0;">
+                <div class="table-responsive"><table class="table">
+                    <thead><tr><th>Filename</th><th>Size</th><th>Uploaded</th><th>Action</th></tr></thead>
+                    <tbody>{% for file in files %}<tr>
+                        <td style="color:var(--text-primary);font-weight:500;">{{ file.original_filename }}</td>
+                        <td>{{ (file.file_size / 1024)|round(2) }} KB</td>
+                        <td style="font-family:'DM Mono',monospace;font-size:0.8rem;">{{ file.uploaded_at[:10] }}</td>
+                        <td><a href="{{ url_for('registrar_download_encrypted', file_id=file.doc_id) }}" class="btn btn-sm btn-primary"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>Download</a></td>
+                    </tr>{% endfor %}</tbody>
+                </table></div>
+                <div style="padding:0.85rem 1.4rem;"><div class="alert alert-info" style="margin:0;font-size:0.82rem;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>As a Registrar, you can download encrypted files only. Decryption is available to Patent Owners.</div></div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="card">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Review Decision</h5></div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('registrar_review', doc_id=doc_id) }}">
+                    <div class="mb-4">
+                        <label class="form-label">Comments</label>
+                        <textarea class="form-control" name="comments" rows="3" placeholder="Add feedback or notes for the IP Generator…"></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" name="action" value="approve" class="btn btn-success"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Approve &amp; Register</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>Reject</button>
+                        <a href="{{ url_for('registrar_dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
