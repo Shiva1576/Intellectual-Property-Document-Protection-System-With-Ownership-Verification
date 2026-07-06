@@ -71,7 +71,7 @@ IP_Document_Protection_System/
 
 ```bash
 git clone https://github.com/Shiva1576/Intellectual-Property-Document-Protection-System-With-Ownership-Verification.git
-cd IP_Document_Protection_System
+cd Intellectual-Property-Document-Protection-System-With-Ownership-Verification
 ```
 
 ### 2. Install dependencies
