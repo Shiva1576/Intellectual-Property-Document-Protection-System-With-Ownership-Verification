@@ -71,19 +71,16 @@ IP_Document_Protection_System/
 
 ```bash
 git clone https://github.com/Shiva1576/Intellectual-Property-Document-Protection-System-With-Ownership-Verification.git
-```
-## 2. Navigate to the project directory
-```bash
 cd Intellectual-Property-Document-Protection-System-With-Ownership-Verification
 ```
 
-### 3. Install dependencies
+### 2. Install dependencies
 
 ```bash
 pip install flask tinydb cryptography werkzeug
 ```
 
-### 4. Run the application
+### 3. Run the application
 
 **Windows:**
 ```bash
