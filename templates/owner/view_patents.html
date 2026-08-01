@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Your Patents{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-3 col-md-12">
+        <div class="sidebar-menu">
+            <div class="sidebar-title">Navigation</div>
+            <a href="{{ url_for('owner_dashboard') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+            <a href="{{ url_for('owner_view_patents') }}" class="active"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>View Patents</a>
+            <a href="{{ url_for('owner_secrets') }}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Secrets &amp; Messages</a>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header"><h5><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Your Patents &amp; Files</h5></div>
+            <div class="card-body" style="padding:{% if documents %}0{% else %}1.4rem{% endif %};">
+                {% if documents %}
+                    {% for doc in documents %}
+                    <div style="padding:1.5rem;border-bottom:1px solid var(--border-dim);">
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                            <div>
+                                <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.3rem;">
+                                    <h6 style="margin:0;font-family:'Syne',sans-serif;font-weight:700;color:var(--text-primary);font-size:1rem;">{{ doc.title }}</h6>
+                                    <span class="badge badge-{{ doc.status }}">{{ doc.status|title }}</span>
+                                </div>
+                                <p style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text-muted);margin:0;">{{ doc.document_type }} &nbsp;·&nbsp; {{ doc.registration_number }}</p>
+                            </div>
+                            <div style="display:flex;gap:0.4rem;flex-shrink:0;">
+                                <a href="{{ url_for('owner_transfer_ownership', doc_id=doc.doc_id) }}" class="btn btn-sm btn-secondary">Transfer</a>
+                                <a href="{{ url_for('owner_document_history', doc_id=doc.doc_id) }}" class="btn btn-sm btn-secondary">History</a>
+                            </div>
+                        </div>
+                        <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:{% if doc.files %}1rem{% else %}0{% endif %};">{{ doc.description }}</p>
+                        {% if doc.files %}
+                        <div style="padding-top:1rem;border-top:1px solid var(--border-dim);">
+                            <p style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.5rem;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Protected Files</p>
+                            <div class="table-responsive"><table class="table" style="font-size:0.82rem;">
+                                <thead><tr><th>Filename</th><th>Size</th><th>Downloads</th></tr></thead>
+                                <tbody>{% for file in doc.files %}<tr>
+                                    <td style="color:var(--text-primary);font-weight:500;">{{ file.original_filename }}</td>
+                                    <td>{{ (file.file_size / 1024)|round(2) }} KB</td>
+                                    <td>
+                                        <a href="{{ url_for('owner_download_encrypted', file_id=file.doc_id) }}" class="btn btn-sm btn-secondary" style="margin-right:0.3rem;"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>Encrypted</a>
+                                        <a href="{{ url_for('owner_download_decrypted', file_id=file.doc_id) }}" class="btn btn-sm btn-success"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>Decrypted</a>
+                                    </td>
+                                </tr>{% endfor %}</tbody>
+                            </table></div>
+                        </div>
+                        {% else %}
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin:0.5rem 0 0;">No files attached to this patent.</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>
+                    <h6>No patents yet</h6><p>Claim an approved patent from the dashboard.</p>
+                    <a href="{{ url_for('owner_dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
