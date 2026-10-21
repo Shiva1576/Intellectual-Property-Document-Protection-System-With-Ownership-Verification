@@ -100,7 +100,6 @@ murmurhash==1.0.15
 namex==0.1.0
 narwhals==2.16.0
 networkx==3.6.1
-ngboost==0.5.6
 numba==0.63.1
 numpy==2.4.0
 openai==2.20.0
